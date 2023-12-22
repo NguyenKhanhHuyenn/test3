@@ -1,55 +1,218 @@
-.login-container {
+.login-container{
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+.col-4{
+    flex: 0 0 auto;
+    width: 33.333%;
+}
+.title{
+    text-align: center;
+    font-size: 25px;
+    font-weight: 600;
+    padding-top: 30px;
+}
+.text{
+    font-weight: 600;
+    padding-bottom: 3px;
+}
+input{
+    padding: 12px 7px;
+    outline: none;
+    background: #1618230f;
+    border: #1618230f;
+    margin-bottom: 7px;
+    width: 100%;
+    border-radius: 3px;
+}
+input:hover{
+    background-color: #dedede;
+    
+}
+button{
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+
+    &.active{
+        background-color: #1eb2a6;
+        color: white;
+    }
+}
+.back{
+    text-align: center;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.input-2{
+    position: relative;
+    
+}
+i.fa-solid{
+    cursor: pointer;
+    position: absolute;
+    top: 12px;
+    right: 10px;
+} 
+
+.wrapper{
+  background: #ececec;
+  padding: 0 20px 0 20px;
+}
+.main{
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  margin-top: 3rem;
-  border-radius: 12px;
-  height: 400px;
-  min-width: 20%;
-  background-color: rgb(218, 218, 218);
+  align-items: center;
+  min-height: 100vh;
 }
-.login-title {
+.side-image{
+  background-image: url("../../../public/images/bg-home.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 10px 0 0 10px;
+  position: relative;
+}
+.header-login{
+  margin: 0px;
+  height: 0px;
+  background-color: #fff;
+}
+.row-login{
+width:  900px;
+height:550px;
+border-radius: 10px;
+background: #fff;
+padding: 0px;
+box-shadow: 5px 5px 10px 1px rgba(0,0,0,0.2);
+}
+.text{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.text p{
+  color: #1C1E53;
+  font-size: 30px; 
+  text-align: left;
+}
+i{
+  font-weight: 400;
+  font-size: 15px;
+}
+.right{
+display: flex;
+justify-content: center;
+align-items: center;
+position: relative;
+}
+.input-box{
+width: 330px;
+box-sizing: border-box;
+}
+/* img{
+  width: 35px;
+  position: absolute;
+  top: 30px;
+  left: 30px;
+} */
+.input-box header{
   font-weight: 700;
-  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 45px;
 }
-form {
+.input-field{
   display: flex;
-  margin-top: 1rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  width: 200px;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+  position: relative;
+  padding: 0 10px 0 10px;
 }
-input {
-  border: none;
-  padding: 0.35rem;
-  font-family: "Inter", sans-serif;
-  margin: 0.75rem 0;
-  border-radius: 4px;
+.input{
+  height: 45px;
   width: 100%;
-}
-button {
-  cursor: pointer;
+  background: transparent;
   border: none;
-  align-self: center;
-  margin-top: 1rem;
-  font-size: 1rem;
-  padding: 0.65rem;
-  border-radius: 4px;
-  color: white;
-  background-color: rgb(161, 161, 161);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  outline: none;
+  margin-bottom: 20px;
+  color: #40414a;
 }
-.login-register {
-  margin: 2rem 1rem 0 1rem;
-  font-size: 1rem;
+.input-box .input-field label{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  pointer-events: none;
+  transition: .5s;
 }
-.login-register-link {
+.input-field input:focus ~ label
+ {
+  top: -10px;
+  font-size: 13px;
+}
+.input-field input:valid ~ label
+{
+ top: -10px;
+ font-size: 13px;
+ color: #5d5076;
+}
+.input-field .input:focus, .input-field .input:valid{
+  border-bottom: 1px solid #1C1E53;
+}
+.submit{
+  border: none;
+  outline: none;
+  height: 45px;
+  background: #ececec;
+  border-radius: 5px;
+  transition: .4s;
+}
+.submit:hover{
+  background: #FCD980;
+  color: #1C1E53;
+}
+.signin{
+  text-align: center;
+  font-size: small;
+  margin-top: 25px;
+}
+span a{
   text-decoration: none;
-  cursor: pointer;
-  margin-top: 1rem;
-  color: rgb(105, 105, 105);
   font-weight: 700;
+  color: #000;
+  transition: .5s;
 }
+span a:hover{
+  text-decoration: underline;
+  color: #000;
+}
+@media only screen and (max-width: 768px){
+  .side-image{
+      border-radius: 10px 10px 0 0;
+  }
+  .img-login{
+      width: 35px;
+      position: absolute;
+      top: 20px;
+      left: 47%;
+  }
+  .text{
+      position: absolute;
+      top: 70%;
+      text-align: center;
+  }
+  .text p, i{
+      font-size: 16px;
+  }
+  .row{
+      max-width:420px;
+      width: 100%;
+  }
+}
+
+

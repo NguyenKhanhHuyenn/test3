@@ -1,0 +1,31 @@
+.footer{
+    background-color: #1C1E53;
+    color: #fff;
+}
+.ft-1 h5{
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 0.5rem;
+    
+}
+.ft-1 p{
+    padding: 0 5rem 0.8rem 0;
+}
+.footer h5{
+    color: #FCD980;
+}
+.ft-2 ul{
+    padding-left: 0;
+}
+
+.ft-2 ul li{
+    padding: 0.35rem 0;
+    font-weight: 500;
+}
+.ft-3 p{
+    font-weight: 500;
+    
+}
+.ft-3 i{
+    padding-right: 0.5rem;
+}

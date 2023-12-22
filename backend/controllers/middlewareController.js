@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const Account = require("../models/Account");
 
 const middlewareController = {
     // Verify token
@@ -10,15 +10,15 @@ const middlewareController = {
             if (token) {
                 const accessToken = token.split(" ")[1];
                 const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_KEY);
-                const user = await User.findById(decoded.id);
+                const account = await Account.findById(decoded.id);
 
-                if (!user) {
+                if (!account) {
                     return res.status(403).json("Token is not valid");
                 }
 
-                // Kiểm tra xem người dùng có phải là chính mình hoặc là admin không
-                if (user._id.toString() === req.params.id || user.role === "admin") {
-                    req.user = user;
+                // Check if the user is themselves or an admin
+                if (account._id.toString() === req.params.id || account.role === "admin") {
+                    req.account = account;
                     next();
                 } else {
                     return res.status(403).json("You're not allowed to perform this action");
@@ -35,7 +35,7 @@ const middlewareController = {
     verifyTokenAndAdmin: async (req, res, next) => {
         try {
             await middlewareController.verifyToken(req, res, async () => {
-                if (req.user.role === "admin") {
+                if (req.account.role === "admin") {
                     next();
                 } else {
                     return res.status(403).json("You're not allowed to perform this action");

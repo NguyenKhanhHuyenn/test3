@@ -1,60 +1,59 @@
-const User = require("../models/User");
+const Account = require("../models/Account");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const authController = {
-    registerUser: async (req, res) => {
+    registerAccount: async (req, res) => {
         try {
             const salt = bcrypt.genSaltSync(10);
             const hashed = bcrypt.hashSync(req.body.pass, salt);
 
-            const newUser = new User({
-                username: req.body.username,
+            const newAccount = new Account({
+                _id: req.body._id,
                 pass: hashed,
-                role: req.body.role,
-                profile: req.body.profile,
+                role: req.body.role
             });
 
-            const user = await newUser.save();
+            const account = await newAccount.save();
 
-            console.log("User saved to the database:", user);
+            console.log("Account saved to the database:", account);
 
-            res.status(200).json(user);
+            res.status(200).json(account);
         } catch (err) {
-            console.error("Error during user registration:", err);
+            console.error("Error during account registration:", err);
             res.status(500).json(err);
         }
     },
 
     // GENERATE ACCESS TOKEN
-    generateAccessToken: (user) => {
+    generateAccessToken: (account) => {
         return jwt.sign(
             {
-                id: user.id,
-                role: user.role
+                id: account.id,
+                role: account.role
             },
             process.env.JWT_ACCESS_KEY,
             { expiresIn: "3600s" }
         );
     },
 
-    // LOGIN USER
-    loginUser: async (req, res) => {
+    // LOGIN ACCOUNT
+    loginAccount: async (req, res) => {
         try {
-            const user = await User.findOne({ username: req.body.username });
+            const account = await Account.findOne({ _id: req.body._id });
 
-            if (!user) {
+            if (!account) {
                 return res.status(404).json("Wrong username");
             }
 
-            const validPassword = await bcrypt.compare(req.body.pass, user.pass);
+            const validPassword = await bcrypt.compare(req.body.pass, account.pass);
 
             if (!validPassword) {
                 return res.status(404).json("Wrong password");
             }
 
-            if (user && validPassword) {
-                const accessToken = authController.generateAccessToken(user);
+            if (account && validPassword) {
+                const accessToken = authController.generateAccessToken(account);
 
                 res.cookie("accessToken", accessToken, {
                     httpOnly: true,
@@ -64,16 +63,16 @@ const authController = {
                     maxAge: 30 * 60 * 1000 
                 });
 
-                const { pass, ...others } = user._doc;
+                const { pass, ...others } = account._doc;
                 return res.status(200).json({ ...others, accessToken });
             }
         } catch (err) {
-            console.log(err)
+            console.log(err);
             res.status(500).json(err);
         }
     },
 
-    userLogout: async (req, res) => {
+    accountLogout: async (req, res) => {
         res.clearCookie("accessToken");
         res.status(200).json("Logged out!");
     }

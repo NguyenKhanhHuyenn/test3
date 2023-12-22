@@ -1,0 +1,143 @@
+
+.head{
+    
+    color: #fff;
+    background-color: #1C1E53;
+}
+.head-content{
+    align-items: center;
+}
+.school-name {
+    margin: 0;
+}
+.page-name {
+    margin-bottom: 5px;
+}
+.logo{
+    display: flex;
+   height: 90px;
+   align-items: center;
+}
+/* .logo-img-wrapper {
+    width: 50px;
+} */
+.logo-img{
+   width: 100%;
+   
+}
+.logo-img-wrapper{
+    width: 50px;
+    display: flex;
+    margin-right: 5px;
+}
+
+.head .icon{
+    margin-left: 10px;
+    color: #1C1E53;
+}
+
+/*--------header-------*/
+header{
+    background-color: #fff;
+   
+    /* height: 50px; */
+}
+
+header ul{
+   align-items: center;
+   margin: 0 !important;
+   
+}
+
+header li{
+    margin-right: 30px;
+    
+    
+}
+header ul li a{
+    color: #1C1E53;
+    font-weight: 500;
+    font-size: 18px;
+    transition: 0.5s;
+    text-decoration: none;
+    text-transform: uppercase;   
+    
+    padding: 10.5px 5px;
+     
+}
+header ul li a:hover{
+    background: #FCD980;
+    color: #1C1E53;
+}
+.start{
+   margin-right: 15px;
+    /* padding: 30px 70px; */
+    color: #fff;
+}
+
+.submit-header{
+    outline: none;
+    font-weight: 500;
+    font-size: 18px;
+    color: #1C1E53;
+    height: 45px;
+    padding: 0 5px;
+    border-radius: 5px;
+    transition: .4s;
+    background-color: transparent;
+ }
+ .submit-header:hover{
+    background: #FCD980;
+    color: #1C1E53;
+ }
+
+
+
+.toggle {
+    display: none;
+}
+@media screen and (max-width:768px) {
+    
+    header {
+        margin: 0;
+        background-color: #1C1E53;
+        position: relative;
+    }
+    header ul.flexSB{
+        display: none;
+    }
+    head ul li{
+        margin-bottom: 20px;
+    }
+    .school-name{
+        margin-top: 0px;
+    }
+    .submit-header{
+        width: 100%;
+    }
+
+    .toggle{
+        display: block;
+        background: none;
+        color:#fff;
+        font-size: 30px;
+        position: absolute;
+        right: 30px;
+        top: 5px;
+    }
+    .mobile-nav{
+        position: absolute;
+        top:6vh;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 1;
+    }
+    .logo-img{
+        width: 50px;
+        padding-left: 0px;
+        margin-left: 0px;
+        
+    }
+    
+}

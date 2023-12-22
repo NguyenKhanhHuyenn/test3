@@ -10,7 +10,7 @@ const userRoute = require("./routes/user");
 const app = express();
 dotenv.config();
 
-mongoose.connect("mongodb://127.0.0.1/test2")
+mongoose.connect("mongodb://127.0.0.1/test3")
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("Error connecting to MongoDB:", err));
 

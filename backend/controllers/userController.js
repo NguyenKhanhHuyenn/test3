@@ -1,32 +1,29 @@
-const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const Account = require("../models/Account")
+const Student = require("../models/Student")
+const Position = require("../models/Position")
 
 const userController = {
-
     // GET PROFILE (ADMIN OR STUDENT)
     getProfile: async (req, res) => {
         try {
             const userId = req.params.id;
-            const requestingUserId = req.user.id;
-            const requestingUserRole = req.user.role;
+            const requestingUserId = req.account.id;
+            const requestingUserRole = req.account.role;
 
-            // Chắc chắn chỉ admin hoặc sinh viên chủ sở hữu mới có quyền xem profile
+            // Ensure only admin or the owner can view the profile
             if (requestingUserRole === "admin" || userId === requestingUserId) {
-                const user = await User.findById(userId);
-                if (!user) {
-                    return res.status(404).json("User not found");
+                const student = await Student.findById(userId);
+                if (!student) {
+                    return res.status(404).json("Student don't have profile");
                 }
-
-                // Nếu là sinh viên và không phải là chủ sở hữu, chỉ trả về thông tin cá nhân (không bao gồm tài khoản)
-                const responseProfile = (requestingUserRole === "student" && userId !== requestingUserId)
-                    ? user.profile.getPublicProfile()
-                    : user.profile;
-
-                res.status(200).json(responseProfile);
+                // Return the full profile for admins or the account owner
+                res.status(200).json(student);
             } else {
                 return res.status(403).json("You're not allowed to view this profile");
             }
         } catch (err) {
-            res.status(500).json(err);
+            res.status(500).json({ error: "Internal Server Error", details: err.message });
         }
     },
 
@@ -34,29 +31,36 @@ const userController = {
     updateProfile: async (req, res) => {
         try {
             const userId = req.params.id;
-            const requestingUserId = req.user.id;
-    
-            const user = await User.findById(userId);
-            if (!user) {
-                return res.status(404).json("User not found");
+            const requestingUserId = req.account.id;
+            const requestingUserRole = req.account.role;
+
+            const account = await Account.findById(userId);
+            if (!account) {
+                return res.status(404).json("Account not found");
             }
-    
-            // Cập nhật thông tin hồ sơ theo yêu cầu
-            if (req.body.fullName) user.profile.fullName = req.body.fullName;
-            if (req.body.studentId) user.profile.studentId = req.body.studentId;
-            if (req.body.dateOfBirth) user.profile.dateOfBirth = req.body.dateOfBirth;
-            if (req.body.gender) user.profile.gender = req.body.gender;
-            if (req.body.faculty) user.profile.faculty = req.body.faculty;
-            if (req.body.major) user.profile.major = req.body.major;
-            if (req.body.gpa) user.profile.gpa = req.body.gpa;
-            if (req.body.advisor) user.profile.advisor = req.body.advisor;
-    
-    
-            await user.save();
-            res.status(200).json("Cập nhật hồ sơ thành công");
+
+            // Ensure only admin or the owner can update the profile
+            if (requestingUserRole !== "admin" && userId !== requestingUserId) {
+                return res.status(403).json("You're not allowed to update this profile");
+            }
+
+            const studentId = account._id;
+            const student = await Student.findById(studentId);
+            if (!student) {
+                return res.status(404).json("Student profile not found");
+            }
+
+            // Update profile information as requested
+            if (req.body.firstname) student.firstname = req.body.firstname;
+            if (req.body.lastname) student.lastname = req.body.lastname;
+            if (req.body.address) student.address = req.body.address;
+            if (req.body.major) student.major = req.body.major;
+            if (req.body.gpa) student.gpa = req.body.gpa;
+
+            await student.save();
+            res.status(200).json("Profile updated successfully");
         } catch (err) {
-            // Xử lý lỗi nếu có
-            res.status(500).json({ error: "Lỗi Server Nội Bộ", chiTiet: err.message });
+            res.status(500).json({ error: "Internal Server Error", details: err.message });
         }
     },
 
@@ -64,54 +68,50 @@ const userController = {
     deleteProfile: async (req, res) => {
         try {
             const userId = req.params.id;
-            const user = await User.findById(userId);
-    
-            if (!user) {
-                return res.status(404).json("User not found");
+
+            // Find the student profile by ID
+            const student = await Student.findById(userId);
+
+            if (!student) {
+                return res.status(404).json("Student not found");
             }
-    
-            // Thực hiện xóa hồ sơ theo yêu cầu
-            if (user.profile) {
-                user.profile = null; // Đặt giá trị profile về null sau khi xóa thành công
-            }
-    
-            await user.save();
-            res.status(200).json("Xóa hồ sơ thành công");
+
+            // Delete the student profile
+            await Student.findByIdAndDelete(userId);
+
+            res.status(200).json("Profile deleted successfully");
         } catch (err) {
-            res.status(500).json({ error: "Lỗi Server Nội Bộ", chiTiet: err.message });
+            res.status(500).json({ error: "Internal Server Error", details: err.message });
         }
     },
+
     getAllProfiles: async (req, res) => {
         try {
-            const users = await User.find({ role: "student" });
-            const profiles = users.map(user => ({
-                userId: user._id,
-                username: user.username,
-                profile: user.profile ? user.profile : {}, 
-            }));
+            const students = await Student.find({}, 'firstname lastname major');
     
-            return res.status(200).json(profiles);
+            return res.status(200).json(students);
         } catch (err) {
             console.error(err);
-            return res.status(500).json({ error: "Internal Server Error" });
+            return res.status(500).json({ error: "Internal Server Error", details: err.message });
         }
     },
+
     createProfile: async (req, res) => {
         try {
             const userId = req.params.id;
-            const requestingUserId = req.user.id;
-    
-            const user = await User.findById(userId);
-            if (!user) {
-                return res.status(404).json("User not found");
+            const requestingUserId = req.account.id;
+
+            const account = await Account.findById(userId);
+            if (!account) {
+                return res.status(404).json("Account not found");
             }
-    
-            // Kiểm tra xem người dùng đã có hồ sơ chưa
-            if (user.profile) {
-                return res.status(400).json("User already has a profile");
+
+            // Check if the user already has a profile
+            if (account.profile) {
+                return res.status(400).json("Account already has a profile");
             }
-    
-            // Tạo hồ sơ mới
+
+            // Create a new profile
             const newProfile = {
                 fullName: req.body.fullName,
                 studentId: req.body.studentId,
@@ -122,15 +122,26 @@ const userController = {
                 gpa: req.body.gpa,
                 advisor: req.body.advisor
             };
-    
-            user.profile = newProfile;
-            await user.save();
-    
-            res.status(201).json("Hồ sơ được tạo thành công");
+
+            account.profile = newProfile;
+            await account.save();
+
+            res.status(201).json("Profile created successfully");
         } catch (err) {
-            res.status(500).json({ error: "Lỗi Server Nội Bộ", chiTiet: err.message });
+            res.status(500).json({ error: "Internal Server Error", details: err.message });
         }
     },
+
+    getAllPositions: async (req, res) => {
+        try {
+            const positions = await Position.find();
+    
+            return res.status(200).json(positions);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Internal Server Error", details: err.message });
+        }
+    }
 };
 
 module.exports = userController;
